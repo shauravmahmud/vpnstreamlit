@@ -1,9 +1,13 @@
 import streamlit as st
-from tornado.ioloop import IOLoop
 from tornado.web import RequestHandler, Application
 from tornado.websocket import WebSocketHandler
 import os
 from tornado.httpserver import HTTPServer
+from tornado.platform.asyncio import AnyThreadEventLoopPolicy
+import asyncio
+
+# Set asyncio event loop policy to AnyThreadEventLoopPolicy
+asyncio.set_event_loop_policy(AnyThreadEventLoopPolicy())
 
 # Streamlit app
 def main():
@@ -42,4 +46,6 @@ if __name__ == "__main__":
     tornado_app = make_tornado_app()
     http_server = HTTPServer(tornado_app)
     http_server.listen(port)
-    IOLoop.current().start()
+
+    # Start the event loop
+    asyncio.get_event_loop().run_forever()
