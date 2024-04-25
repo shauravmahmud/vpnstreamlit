@@ -48,14 +48,14 @@ def main():
         st.subheader("Connect to VPN")
         if st.button("Connect"):
             # Call API to connect to VPN
-            response = requests.post("http://localhost:8000/connect-vpn")
+            response = requests.post("http://localhost:1048/connect-vpn")
             st.write(response.text)
 
     elif choice == "Disconnect from VPN":
         st.subheader("Disconnect from VPN")
         if st.button("Disconnect"):
             # Call API to disconnect from VPN
-            response = requests.post("http://localhost:8000/disconnect-vpn")
+            response = requests.post("http://localhost:1048/disconnect-vpn")
             st.write(response.text)
 
 if __name__ == '__main__':
