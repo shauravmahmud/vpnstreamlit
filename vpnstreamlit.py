@@ -1,8 +1,8 @@
-import os
 import streamlit as st
 
-# Access the port information
-port = os.environ.get("PORT", "Not found")
+# Access the IP address and port information
+ip = st.server.server_address[0]
+port = st.server.server_address[1]
 
-# Display the port
-st.write(f"The Streamlit app is running on port {port}")
+# Display the IP address and port
+st.write(f"The Streamlit app is running at http://{ip}:{port}")
