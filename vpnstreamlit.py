@@ -1,62 +1,42 @@
 import streamlit as st
-import requests
-import subprocess
-import threading
-import tornado.ioloop
-import tornado.web
-
-# Tornado handlers
-class ConnectVPNHandler(tornado.web.RequestHandler):
-    def post(self):
-        # Logic to start OpenVPN connection
-        subprocess.run(["sudo", "openvpn", "--config", "your_vpn_config.ovpn"])
-        self.write("VPN connected")
-
-class DisconnectVPNHandler(tornado.web.RequestHandler):
-    def post(self):
-        # Logic to stop OpenVPN connection
-        subprocess.run(["sudo", "pkill", "openvpn"])
-        self.write("VPN disconnected")
-
-def make_app():
-    return tornado.web.Application([
-        (r"/connect-vpn", ConnectVPNHandler),
-        (r"/disconnect-vpn", DisconnectVPNHandler),
-    ])
-
-# Start Tornado server in a separate thread
-def run_tornado():
-    app = make_app()
-    app.listen(8888)
-    tornado.ioloop.IOLoop.current().start()
-
-tornado_thread = threading.Thread(target=run_tornado)
-tornado_thread.start()
+from tornado.ioloop import IOLoop
+from tornado.web import RequestHandler, Application
+from tornado.websocket import WebSocketHandler
 
 # Streamlit app
 def main():
-    st.title("Streamlit VPN Manager")
+    st.title("Streamlit with Tornado Server")
 
-    # Sidebar menu
-    menu = ["Home", "Connect to VPN", "Disconnect from VPN"]
-    choice = st.sidebar.selectbox("Menu", menu)
+    st.write("This is a Streamlit app running with a Tornado server.")
 
-    if choice == "Home":
-        st.write("Welcome to the Streamlit VPN Manager!")
+# Define Tornado RequestHandler
+class MainHandler(RequestHandler):
+    def get(self):
+        self.write("This is the Tornado MainHandler")
 
-    elif choice == "Connect to VPN":
-        st.subheader("Connect to VPN")
-        if st.button("Connect"):
-            # Call API to connect to VPN
-            response = requests.post("http://localhost:1048/connect-vpn")
-            st.write(response.text)
+# Define Tornado WebSocketHandler
+class WebSocketEchoHandler(WebSocketHandler):
+    def open(self):
+        print("WebSocket opened")
 
-    elif choice == "Disconnect from VPN":
-        st.subheader("Disconnect from VPN")
-        if st.button("Disconnect"):
-            # Call API to disconnect from VPN
-            response = requests.post("http://localhost:1048/disconnect-vpn")
-            st.write(response.text)
+    def on_message(self, message):
+        self.write_message(f"You said: {message}")
 
-if __name__ == '__main__':
+    def on_close(self):
+        print("WebSocket closed")
+
+# Tornado Application
+def make_tornado_app():
+    return Application([
+        (r"/", MainHandler),
+        (r"/websocket", WebSocketEchoHandler),
+    ])
+
+if __name__ == "__main__":
+    # Start Streamlit app
     main()
+
+    # Start Tornado server
+    tornado_app = make_tornado_app()
+    tornado_app.listen(8888)
+    IOLoop.current().start()
