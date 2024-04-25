@@ -19,7 +19,7 @@ class DisconnectVPNHandler(tornado.web.RequestHandler):
         subprocess.run(["sudo", "pkill", "openvpn"])
         self.write("VPN disconnected")
 
-def find_open_port(start_port=1043, end_port=65535):
+def find_open_port(start_port=8000, end_port=9000):
     for port in range(start_port, end_port + 1):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             try:
