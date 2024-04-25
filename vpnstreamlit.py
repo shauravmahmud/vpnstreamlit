@@ -3,11 +3,11 @@ from tornado.ioloop import IOLoop
 from tornado.web import RequestHandler, Application
 from tornado.websocket import WebSocketHandler
 import os
+from tornado.httpserver import HTTPServer
 
 # Streamlit app
 def main():
     st.title("Streamlit with Tornado Server")
-
     st.write("This is a Streamlit app running with a Tornado server.")
 
 # Define Tornado RequestHandler
@@ -40,5 +40,6 @@ if __name__ == "__main__":
     # Start Tornado server
     port = int(os.environ.get("PORT", 8888))
     tornado_app = make_tornado_app()
-    tornado_app.listen(port)
+    http_server = HTTPServer(tornado_app)
+    http_server.listen(port)
     IOLoop.current().start()
