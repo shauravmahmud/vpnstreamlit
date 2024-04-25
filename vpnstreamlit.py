@@ -42,7 +42,7 @@ if __name__ == "__main__":
     main()
 
     # Start Tornado server
-    port = int(os.environ.get("PORT", 8888))
+    port = int(os.environ.get("PORT", 47000))
     tornado_app = make_tornado_app()
     http_server = HTTPServer(tornado_app)
     http_server.listen(port)
